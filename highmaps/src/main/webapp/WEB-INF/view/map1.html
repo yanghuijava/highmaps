@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+<head>
+	<base href="${base}"></base>
+	<meta charset="utf-8"/>
+	<title>highmaps之中国地图</title>
+	<link rel="stylesheet" type="text/css" href="css/themes/default/easyui.css"/>
+    <link rel="stylesheet" type="text/css" href="css/themes/icon.css"/>
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="js/easyui-lang-zh_CN.js"></script>
+	<script type="text/javascript" src="js/highmaps/highcharts.js"></script>
+	<script type="text/javascript" src="js/highmaps/map.js"></script>
+	<script type="text/javascript" src="js/highmaps/data.js"></script>
+	<script type="text/javascript" src="js/highmaps/drilldown.js"></script>
+	<script type="text/javascript" src="js/highmaps/cn-china-by-peng8.js"></script>
+	<script type="text/javascript" src="js/highmaps/myHighmaps.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			var myMaps = new MyHighmaps('container');
+			myMaps.draw('highmaps/testData1.json',null);
+		});
+	</script>
+</head>
+  <body>
+  	<div id="container" style="width: 800px;height:600px;margin:0 auto"></div>
+  </body>
+</html>

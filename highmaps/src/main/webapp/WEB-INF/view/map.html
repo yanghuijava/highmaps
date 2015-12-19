@@ -1,0 +1,136 @@
+<!doctype html>
+<html>
+<head>
+	<base href="${base}"></base>
+	<meta charset="utf-8"/>
+	<title>highmaps之中国地图</title>
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/highmaps/highcharts.js"></script>
+	<script type="text/javascript" src="js/highmaps/map.js"></script>
+	<!-- <script type="text/javascript" src="js/highmaps/highmaps.js"></script> -->
+	<script type="text/javascript" src="js/highmaps/data.js"></script>
+	<script type="text/javascript" src="js/highmaps/drilldown.js"></script>
+	<script type="text/javascript" src="js/highmaps/cn-china-by-peng8.js"></script>
+    <!-- <script type="text/javascript" src="http://data.hcharts.cn/jsonp.php?filename=GeoMap/json/gan_su.geo.json"></script> -->
+	<script type="text/javascript">
+		$(function(){
+			 var data = [{"drilldown":"tai_wan","drill-key": "tai_wan","value": 10,"value1":12.34},
+			             {"drill-key": "shang_hai","value": 30,"drilldown":"shang_hai","value1":12.34},
+			             {"drill-key": "zhe_jiang","value": 13,"drilldown":"zhe_jiang","value1":12.34},
+			             {"drill-key": "an_hui","value": 11,"drilldown":"an_hui","value1":12.34},
+			             {"drill-key": "gan_su","value": 15,"drilldown":"gan_su","value1":12.34},
+			             {"drill-key": "xin_jiang","value": 16,"drilldown":"xin_jiang","value1":12.34}];
+			Highcharts.setOptions({
+		        lang:{
+		            drillUpText:"返回 > 中国"
+		        }
+		    });
+			var c = $('#container').highcharts('Map',{
+				chart : {
+		            events: {
+		                drilldown: function (e) {
+		                    if (!e.seriesOptions) {
+		                        var chart = this;
+		                        var cname = e.point.properties["cn-name"];
+		                        chart.showLoading('数据加载中....');
+		                        //加载城市数据
+		                        $.ajax({type: "GET",url: "cityJson/" + e.point.drilldown + ".js",
+		                            contentType: "application/json; charset=utf-8",
+		                            success: function(json) {
+		                            	var citydata = [{"name": "巴音郭楞蒙古自治州","value": 10}];
+		                            	chart.hideLoading();
+		                            	chart.addSeriesAsDrilldown(e.point, {
+				                        	data:citydata,
+		                                    mapData: Highcharts.maps['countries/cn/custom/cn-' + e.point.drilldown],
+		                		            joinBy: 'name',
+		                		            name: 'Random data',
+		                                    dataLabels: {
+		                                        enabled: true,
+		                                        format: '{point.properties.name}'
+		                                    }
+		                                });
+		                            },
+		                            error: function (XMLHttpRequest, textStatus, errorThrown) {
+		                            	chart.hideLoading();
+		                            }
+		                        });
+		                    }
+		                    this.setTitle(null, { text: cname });
+		                },
+		                drillup: function () {
+		                    this.setTitle(null, { text: '中国' });
+		                }
+		            }
+		        },
+				title : {
+		            text : '中国地图'
+		        },
+		        subtitle : {
+		            text :'中国',
+		            floating: true,
+		            align: 'right',
+		            y: 50,
+		            style: {
+		                fontSize: '16px'
+		            }
+		        },
+		        mapNavigation: {
+		            enabled: true,
+		            buttonOptions: {
+		                verticalAlign: 'bottom'
+		            }
+		        },
+		        colorAxis: {
+		            min: 0,
+		            minColor: '#E6E7E8',
+		            maxColor: '#005645'
+		        },
+		        legend:{
+		            layout: 'vertical',
+		            align: 'right',
+		            verticalAlign: 'middle'
+		        },
+		        plotOptions: {
+		            map: {
+		                states: {
+		                    hover: {
+		                        color: '#EEDD66'
+		                    }
+		                }
+		            }
+		        },
+		       	tooltip:{
+		        	pointFormat:"{point.properties.name}:{point.value}"
+		       	},
+		        series : [{
+		            data : data,
+		            mapData: Highcharts.maps['countries/cn/custom/cn-all-china'],
+		            joinBy: 'drill-key',
+		            name: 'Random data',
+		            dataLabels: {
+		                enabled: true,
+		                format: '{point.properties.cn-name}'
+		            }
+		        }],
+		        drilldown: {
+		            activeDataLabelStyle: {
+		                color: '#FFFFFF',
+		                textDecoration: 'none',
+		                textShadow: '0 0 3px #000000'
+		            },
+		            drillUpButton: {
+		                relativeTo: 'spacingBox',
+		                position: {
+		                    x: 0,
+		                    y: 60
+		                }
+		            }
+		        }
+			});
+		});
+	</script>
+</head>
+  <body>
+  	<div id="container" style="width: 800px;height:600px;margin:0 auto"></div>
+  </body>
+</html>

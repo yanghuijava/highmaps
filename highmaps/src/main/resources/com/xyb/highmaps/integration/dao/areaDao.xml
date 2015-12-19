@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xyb.highmaps.integration.dao.AreaDao" >
+
+  <sql id="column" >
+    id,parentId,idcard,name,level,drill_key
+  </sql>
+  <resultMap id="resultMap" type="com.xyb.highmaps.biz.model.Area" >
+    <id column="id" property="id"/>
+    <result column="parentId" property="parentId"/>
+    <result column="idcard" property="idcard"/>
+    <result column="name" property="name"/>
+    <result column="level" property="level"/>
+    <result column="drill_key" property="drillKey"/>
+  </resultMap>
+  
+  <select id="queryAll" parameterType="map" resultMap="resultMap">
+  	select <include refid="column"/> from bi_idcard_area
+  	<where>
+  		<if test="id != null">and id = #{id}</if>
+  		<if test="parentId != null">and parentId = #{parentId}</if>
+  		<if test="idcard != null">and idcard = #{idcard}</if>
+  		<if test="name != null">and name = #{name}</if>
+  		<if test="level != null">and level = #{level}</if>
+  		<if test="drillKey != null">and drill_key = #{drillKey}</if>
+  	</where>
+  </select>
+  
+   <select id="queryById" parameterType="int" resultMap="resultMap">
+  	select <include refid="column"/> from bi_idcard_area where id = #{id}
+   </select>
+  
+   <select id="queryByIdcard" parameterType="int" resultMap="resultMap">
+  	select <include refid="column"/> from bi_idcard_area where idcard = #{idcard}
+   </select>
+   
+   <select id="queryChildrenByDrillKey" parameterType="String" resultMap="resultMap">
+  	select <include refid="column"/> from bi_idcard_area where parentId = 
+  	(select id from bi_idcard_area where drill_key = #{drillKey})
+   </select>
+  
+</mapper>
